@@ -12,7 +12,6 @@ export default function createManyToOneIndex(definition) {
   const get = (state, key = null) => getIndex(state)[key] || EMPTY_ARRAY;
   const computeKey = object => (isDefined(object[attribute]) ? object[attribute] : null);
   const sort = createSort(comparator);
-  console.log('HERE');
   return {
     attribute,
     name: indexName,
