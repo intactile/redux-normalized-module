@@ -1,6 +1,11 @@
-import { moveAtTheEnd, removeElement } from './arrayUtils';
-import createIndex from './createIndex';
+import { moveAtTheEnd, removeElement } from './utils';
 import createSort from './createSort';
+import createOneToOneIndex from './createOneToOneIndex';
+import createManyToOneIndex from './createManyToOneIndex';
+
+function createIndex(definition) {
+  return definition.oneToOne ? createOneToOneIndex(definition) : createManyToOneIndex(definition);
+}
 
 function createIndexes(indexesDefinitions = []) {
   return indexesDefinitions.map(createIndex);

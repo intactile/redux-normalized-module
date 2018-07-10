@@ -1,6 +1,6 @@
-import { removeElement, moveAtTheEnd } from '../src/arrayUtils';
+import { removeElement, moveAtTheEnd } from '../src/utils';
 
-describe('(Utils) arrays', () => {
+describe('utils', () => {
   describe('removeElement', () => {
     function assertElementRemoved(array, object, expectedArray, expectedIndex) {
       const index = removeElement(array, object);

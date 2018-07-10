@@ -13,3 +13,7 @@ export function moveAtTheEnd(arr, object) {
   }
   return index;
 }
+
+export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
+export const createIndexName = definition => `by${capitalize(definition.attribute)}`;
+export const isDefined = o => o !== undefined;
