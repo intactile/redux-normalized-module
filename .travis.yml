@@ -4,19 +4,19 @@ node_js:
 env:
   global:
     - NODE_ENV=TEST
-    - CC_TEST_REPORTER_ID=3b8fe1d9df746d9017827489daae1d325fa24b039787fb6b015eba07ce4ddfc8
+    - CC_TEST_REPORTER_ID=803387fec137c60566c4a5d5f2637756da688e97d40e31080bd827a50e3a0efd
 
 cache:
   yarn: true
   directories:
     - node_modules
 
-# before_script:
-#   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-#   - chmod +x ./cc-test-reporter
-#   - ./cc-test-reporter before-build
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 script: npm run test:cover
 
-# after_script:
-#   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
