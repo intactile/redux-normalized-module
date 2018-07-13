@@ -47,6 +47,7 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
+    "@intactile/redux-utils": "^0.1.0",
     "invariant": "^2.2.4",
     "lodash.constant": "^3.0.0",
     "lodash.groupby": "^4.6.0",

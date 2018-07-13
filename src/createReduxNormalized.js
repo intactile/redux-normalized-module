@@ -1,3 +1,4 @@
+import { createModuleReducer, createActionCreator } from '@intactile/redux-utils';
 import mapValues from 'lodash.mapvalues';
 import invariant from 'invariant';
 import createNormalized from './createNormalized';
@@ -77,22 +78,6 @@ function createCaseReducer(type, normalized, reducerSpec) {
   return reducersFactories[type](normalized, reducerSpec);
 }
 
-function createModuleReducer(reducers, initialState) {
-  Object.keys(reducers).forEach(type => {
-    invariant(
-      !(type.includes('undefined') || type.includes('null')),
-      `Can't create a module reducer with an invalid action type: ${type}`
-    );
-  });
-  return (state = initialState, action) => {
-    const { type } = action;
-    if (reducers[type]) {
-      return reducers[type](state, action);
-    }
-    return state;
-  };
-}
-
 function createReducer(normalized, reducersSpec) {
   const initialState = normalized.commands.initialize();
   const reducers = mapValues(reducersSpec, reducerSpec => {
@@ -107,42 +92,18 @@ function createReducer(normalized, reducersSpec) {
   return createModuleReducer(reducers, initialState);
 }
 
-function createActionForCreate(type) {
-  return function create(object) {
-    return { type, payload: object };
-  };
-}
-
 function createActionForUpdate(type) {
   return function update(id, values) {
     return { type, payload: { id, ...values } };
   };
 }
 
-function createActionForReplace(type) {
-  return function replace(object) {
-    return { type, payload: object };
-  };
-}
-
-function createActionForDelete(type) {
-  return function del(id) {
-    return { type, payload: id };
-  };
-}
-
-function createActionForToFront(type) {
-  return function toFront(id) {
-    return { type, payload: id };
-  };
-}
-
 const actionsFactories = {
-  create: createActionForCreate,
+  create: createActionCreator,
   update: createActionForUpdate,
-  replace: createActionForReplace,
-  delete: createActionForDelete,
-  toFront: createActionForToFront
+  replace: createActionCreator,
+  delete: createActionCreator,
+  toFront: createActionCreator
 };
 
 function createAction(actionType, reducerSpec) {
