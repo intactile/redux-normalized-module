@@ -121,12 +121,38 @@ describe('(Redux Module) Normalized', () => {
 
     it('should create properly', () => {
       const previousState = getState();
-      create({ id: 1, prop: 'value' });
+      create({ prop: 'value' });
 
       const state = getState();
       expect(selectors.getAllIds(state)).toEqual([1]);
       expect(selectors.getById(state, 1)).toEqual({ id: 1, prop: 'value' });
-      expect(selectors.getLastCreated(state, 1)).toEqual({ id: 1, prop: 'value' });
+      expect(selectors.getLastCreated(state)).toEqual({ id: 1, prop: 'value' });
+      expect(selectors.isEmpty(state)).toBeFalsy();
+      checkIsMutated(previousState, state, 'objects.allIds', 'objects.byId');
+    });
+
+    it('should create with an existing id', () => {
+      const previousState = getState();
+      create({ id: 10, prop: 'value' });
+
+      const state = getState();
+      expect(selectors.getAllIds(state)).toEqual([10]);
+      expect(selectors.getById(state, 10)).toEqual({ id: 10, prop: 'value' });
+      expect(selectors.getLastCreated(state)).toEqual({ id: 10, prop: 'value' });
+      expect(selectors.isEmpty(state)).toBeFalsy();
+      checkIsMutated(previousState, state, 'objects.allIds', 'objects.byId');
+    });
+
+    it('should prevent creation with an already used id', () => {
+      const previousState = getState();
+      create({ id: 10, prop: 'value' });
+
+      expect(() => create({ id: 10, prop: 'value2' })).toThrowError();
+
+      const state = getState();
+      expect(selectors.getAllIds(state)).toEqual([10]);
+      expect(selectors.getById(state, 10)).toEqual({ id: 10, prop: 'value' });
+      expect(selectors.getLastCreated(state)).toEqual({ id: 10, prop: 'value' });
       expect(selectors.isEmpty(state)).toBeFalsy();
       checkIsMutated(previousState, state, 'objects.allIds', 'objects.byId');
     });
@@ -660,6 +686,7 @@ describe('(Redux Module) Normalized', () => {
     it('should create properly', () => {
       create({ id: 1, containerId: 10 });
       create({ id: 2, containerId: 20 });
+      create({ id: 3 });
 
       const state = getState();
       expect(selectors.byContainerId.get(state, 10)).toEqual({
@@ -669,6 +696,9 @@ describe('(Redux Module) Normalized', () => {
       expect(selectors.byContainerId.get(state, 20)).toEqual({
         id: 2,
         containerId: 20
+      });
+      expect(selectors.byContainerId.get(state, null)).toEqual({
+        id: 3
       });
     });
 
@@ -685,6 +715,14 @@ describe('(Redux Module) Normalized', () => {
         containerId: 40
       });
       expect(selectors.byContainerId.exists(state, 40)).toBeTruthy();
+    });
+
+    it('should not update the index if not needed', () => {
+      load([{ id: 1, containerId: 10 }, { id: 2, containerId: 20 }, { id: 3, containerId: 30 }]);
+      const previousState = getState();
+      update({ id: 1, containerId: 10, value: true });
+      checkIsMutated(previousState, getState(), 'objects.byId.1');
+      checkIsNotMutated(previousState, getState(), 'objects.byContainerId');
     });
 
     it('should replace properly', () => {

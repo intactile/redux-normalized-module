@@ -1,4 +1,5 @@
-import { moveAtTheEnd, removeElement } from './utils';
+import invariant from 'invariant';
+import { moveAtTheEnd, removeElement, isDefined } from './utils';
 import createSort from './createSort';
 import createOneToOneIndex from './createOneToOneIndex';
 import createManyToOneIndex from './createManyToOneIndex';
@@ -64,15 +65,18 @@ function createCommands(indexes, sort) {
       return loadedState;
     },
     add: (state, object) => {
-      const id = getNextId(state);
-      object.id = id;
+      if (isDefined(object.id)) {
+        invariant(state.byId[object.id] === undefined, 'this id is already used');
+      } else {
+        object.id = getNextId(state);
+      }
       const allIds = [...state.allIds];
-      allIds.push(id);
+      allIds.push(object.id);
       const newState = {
         ...state,
         byId: {
           ...state.byId,
-          [id]: object
+          [object.id]: object
         },
         allIds
       };
