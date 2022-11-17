@@ -15,9 +15,12 @@ function queriesToSelectors(normalized, queryToSelector) {
 }
 
 function createNormalizedSelectors(normalized, getStateSlice) {
-  const queryToSelector = query => (state, ...others) => query(getStateSlice(state), ...others);
+  const queryToSelector =
+    (query) =>
+    (state, ...others) =>
+      query(getStateSlice(state), ...others);
   const selectors = queriesToSelectors(normalized, queryToSelector);
-  normalized.indexes.forEach(index => {
+  normalized.indexes.forEach((index) => {
     selectors[index.name] = queriesToSelectors(index, queryToSelector);
   });
   return selectors;
@@ -69,7 +72,7 @@ const reducersFactories = {
   delete: createReducerForDelete,
   replace: createReducerForReplace,
   toFront: createReducerForToFront,
-  load: createReducerForLoad
+  load: createReducerForLoad,
 };
 
 function createCaseReducer(type, normalized, reducerSpec) {
@@ -80,7 +83,7 @@ function createCaseReducer(type, normalized, reducerSpec) {
 
 function createReducer(normalized, reducersSpec) {
   const initialState = normalized.commands.initialize();
-  const reducers = mapValues(reducersSpec, reducerSpec => {
+  const reducers = mapValues(reducersSpec, (reducerSpec) => {
     let reducer = reducerSpec;
     if (typeof reducerSpec === 'string') {
       reducer = createCaseReducer(reducerSpec, normalized);
@@ -103,7 +106,7 @@ const actionsFactories = {
   update: createActionForUpdate,
   replace: createActionCreator,
   delete: createActionCreator,
-  toFront: createActionCreator
+  toFront: createActionCreator,
 };
 
 function createAction(actionType, reducerSpec) {
@@ -144,6 +147,6 @@ export default function createReduxNormalized(moduleDefinition) {
     reducer,
     selectors: createNormalizedSelectors(normalized, getStateSlice),
     actions: createActions(moduleDefinition.reducers),
-    actionsTypes: createActionsTypes(moduleDefinition.reducers)
+    actionsTypes: createActionsTypes(moduleDefinition.reducers),
   };
 }

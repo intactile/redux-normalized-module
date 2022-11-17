@@ -7,6 +7,7 @@ describe('utils', () => {
       expect(expectedIndex).toEqual(index);
       expect(array).toEqual(expectedArray);
     }
+    // eslint-disable-next-line jest/expect-expect
     it('Should remove an element from an array', () => {
       const obj1 = { value: '1' };
       const obj2 = { value: '2' };
@@ -23,6 +24,7 @@ describe('utils', () => {
       expect(expectedIndex).toEqual(index);
       expect(array).toEqual(expectedArray);
     }
+    // eslint-disable-next-line jest/expect-expect
     it('Should move an object at the end of an array', () => {
       const obj1 = { value: '1' };
       const obj2 = { value: '2' };

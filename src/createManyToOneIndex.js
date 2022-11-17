@@ -7,22 +7,29 @@ const EMPTY_ARRAY = [];
 
 export default function createManyToOneIndex(definition) {
   const { attribute, comparator } = definition;
-  const indexName = createIndexName(definition);
-  const getIndex = state => state[indexName];
+  let indexName;
+  let computeKey;
+  if (typeof attribute === 'string') {
+    indexName = createIndexName(attribute);
+    computeKey = (object) => (isDefined(object[attribute]) ? object[attribute] : null);
+  } else {
+    indexName = createIndexName(attribute.name);
+    computeKey = attribute.computeKey;
+  }
+  const getIndex = (state) => state[indexName];
   const get = (state, key = null) => getIndex(state)[key] || EMPTY_ARRAY;
-  const computeKey = object => (isDefined(object[attribute]) ? object[attribute] : null);
   const sort = createSort(comparator);
   return {
     attribute,
     name: indexName,
-    initialize: state => {
+    initialize: (state) => {
       state[indexName] = {};
     },
-    load: state => {
-      const indexer = id => computeKey(state.byId[id]);
+    load: (state) => {
+      const indexer = (id) => computeKey(state.byId[id]);
       state[indexName] = groupBy(state.allIds, indexer);
       if (sort.isPresent) {
-        state[indexName] = mapValues(state[indexName], ids => sort(state, ids));
+        state[indexName] = mapValues(state[indexName], (ids) => sort(state, ids));
       }
     },
     add: (state, object) => {
@@ -32,7 +39,7 @@ export default function createManyToOneIndex(definition) {
       sort(state, ids);
       state[indexName] = {
         ...state[indexName],
-        [key]: ids
+        [key]: ids,
       };
     },
     remove: (state, object) => {
@@ -41,7 +48,7 @@ export default function createManyToOneIndex(definition) {
       removeElement(ids, object.id);
       state[indexName] = {
         ...state[indexName],
-        [key]: ids
+        [key]: ids,
       };
     },
     update: (state, oldObject, newObject) => {
@@ -57,14 +64,14 @@ export default function createManyToOneIndex(definition) {
         state[indexName] = {
           ...state[indexName],
           [oldKey]: oldIds,
-          [newKey]: newIds
+          [newKey]: newIds,
         };
       } else if (sort.isNeeded(oldObject, newObject)) {
         const newIds = get(state, newKey).slice();
         sort(state, newIds);
         state[indexName] = {
           ...state[indexName],
-          [newKey]: newIds
+          [newKey]: newIds,
         };
       }
     },
@@ -74,9 +81,9 @@ export default function createManyToOneIndex(definition) {
       moveAtTheEnd(ids, objectToMove.id);
       state[indexName] = {
         ...state[indexName],
-        [key]: ids
+        [key]: ids,
       };
     },
-    queries: { get }
+    queries: { get },
   };
 }

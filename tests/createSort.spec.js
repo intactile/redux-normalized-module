@@ -39,8 +39,8 @@ describe('(Redux Module) Normalized - createSort', () => {
           1: 10,
           2: 5,
           3: 15,
-          4: 20
-        }
+          4: 20,
+        },
       };
 
       expect(sort(state, [1, 2, 3, 4])).toEqual([2, 1, 3, 4]);

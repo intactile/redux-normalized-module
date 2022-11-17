@@ -12,14 +12,14 @@ function createIndexes(indexesDefinitions = []) {
   return indexesDefinitions.map(createIndex);
 }
 
-const getByIdMap = state => state.byId;
+const getByIdMap = (state) => state.byId;
 const getById = (state, id) => getByIdMap(state)[id];
-const getAllIds = state => state.allIds;
-const getLastCreatedId = state => Math.max(...getAllIds(state), 0);
-const getNextId = state => getLastCreatedId(state) + 1;
-const getAll = state => getAllIds(state).map(id => getById(state, id));
-const getLastCreated = state => getById(state, getLastCreatedId(state));
-const isEmpty = state => getAllIds(state).length === 0;
+const getAllIds = (state) => state.allIds;
+const getLastCreatedId = (state) => Math.max(...getAllIds(state), 0);
+const getNextId = (state) => getLastCreatedId(state) + 1;
+const getAll = (state) => getAllIds(state).map((id) => getById(state, id));
+const getLastCreated = (state) => getById(state, getLastCreatedId(state));
+const isEmpty = (state) => getAllIds(state).length === 0;
 
 function createCommands(indexes, sort) {
   function replace(state, object) {
@@ -29,13 +29,13 @@ function createCommands(indexes, sort) {
       ...state,
       byId: {
         ...state.byId,
-        [id]: object
-      }
+        [id]: object,
+      },
     };
     if (sort.isNeeded(oldObject, object)) {
       newState.allIds = sort(newState, newState.allIds.slice());
     }
-    indexes.forEach(index => index.update(newState, oldObject, object));
+    indexes.forEach((index) => index.update(newState, oldObject, object));
     return newState;
   }
 
@@ -43,9 +43,9 @@ function createCommands(indexes, sort) {
     initialize: () => {
       const state = {
         byId: {},
-        allIds: []
+        allIds: [],
       };
-      indexes.forEach(index => {
+      indexes.forEach((index) => {
         index.initialize(state);
       });
       return state;
@@ -54,14 +54,14 @@ function createCommands(indexes, sort) {
       if (!objects) {
         return state;
       }
-      const allIds = objects.map(object => object.id);
+      const allIds = objects.map((object) => object.id);
       const byId = objects.reduce((map, object) => {
         map[object.id] = object;
         return map;
       }, {});
       const loadedState = { ...state, byId, allIds };
       sort(loadedState, allIds);
-      indexes.forEach(index => index.load(loadedState));
+      indexes.forEach((index) => index.load(loadedState));
       return loadedState;
     },
     add: (state, object) => {
@@ -76,12 +76,12 @@ function createCommands(indexes, sort) {
         ...state,
         byId: {
           ...state.byId,
-          [object.id]: object
+          [object.id]: object,
         },
-        allIds
+        allIds,
       };
       sort(newState, allIds);
-      indexes.forEach(index => index.add(newState, object));
+      indexes.forEach((index) => index.add(newState, object));
       return newState;
     },
     remove: (state, id) => {
@@ -93,9 +93,9 @@ function createCommands(indexes, sort) {
       const newState = {
         ...state,
         allIds,
-        byId
+        byId,
       };
-      indexes.forEach(index => index.remove(newState, object));
+      indexes.forEach((index) => index.remove(newState, object));
       return newState;
     },
     update: (state, id, values) => {
@@ -110,11 +110,11 @@ function createCommands(indexes, sort) {
       moveAtTheEnd(allIds, id);
       const newState = {
         ...state,
-        allIds
+        allIds,
       };
-      indexes.forEach(index => index.toFront(newState, objectToMove));
+      indexes.forEach((index) => index.toFront(newState, objectToMove));
       return newState;
-    }
+    },
   };
 }
 
@@ -131,7 +131,7 @@ export default function createNormalized(definition) {
       getNextId,
       getLastCreated,
       getAll,
-      isEmpty
-    }
+      isEmpty,
+    },
   };
 }

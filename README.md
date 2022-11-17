@@ -153,6 +153,21 @@ const moduleDefinition = {
 };
 ```
 
+The attribute property can also be an object to handle more complex use case
+it should provide a name property, this will be use to generate the name of the index
+and it should also provide a custom function to compute the keys of the index, this function will be called with the object as parameter:
+
+```javascript
+const moduleDefinition = {
+  indexes: [{
+    attribute: {
+      name: "isColored",
+      computeKey: (object) => !!object.color
+    }
+  }]
+};
+```
+
 ### Add a one to one index
 
 ```javascript

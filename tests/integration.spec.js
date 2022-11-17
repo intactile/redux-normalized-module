@@ -45,7 +45,7 @@ describe('(Redux Module) Normalized', () => {
   }
 
   function checkIsMutated(previousState, newState, ...propertiesPaths) {
-    propertiesPaths.forEach(propertyPath => {
+    propertiesPaths.forEach((propertyPath) => {
       const path = propertyPath.split('.');
       do {
         expect(getValue(previousState, path)).not.toBe(getValue(newState, path));
@@ -54,7 +54,7 @@ describe('(Redux Module) Normalized', () => {
   }
 
   function checkIsNotMutated(previousState, newState, ...propertiesPaths) {
-    propertiesPaths.forEach(propertyPath => {
+    propertiesPaths.forEach((propertyPath) => {
       const path = propertyPath.split('.');
       expect(getValue(previousState, path)).toBe(getValue(newState, path));
     });
@@ -62,7 +62,7 @@ describe('(Redux Module) Normalized', () => {
 
   describe('without indexes', () => {
     const moduleDefinition = {
-      selector: state => state.objects,
+      selector: (state) => state.objects,
       reducers: {
         CREATE: 'create',
         DELETE: 'delete',
@@ -71,9 +71,9 @@ describe('(Redux Module) Normalized', () => {
         TO_FRONT: 'toFront',
         LOAD_SUCCESS: {
           type: 'load',
-          extractor: action => action.payload.objects
-        }
-      }
+          extractor: (action) => action.payload.objects,
+        },
+      },
     };
     beforeEach(() => {
       initialize(moduleDefinition);
@@ -85,7 +85,7 @@ describe('(Redux Module) Normalized', () => {
         delete: 'DELETE',
         update: 'UPDATE',
         replace: 'REPLACE',
-        toFront: 'TO_FRONT'
+        toFront: 'TO_FRONT',
       });
     });
 
@@ -96,7 +96,7 @@ describe('(Redux Module) Normalized', () => {
       expect(selectors.isEmpty(state)).toBeTruthy();
       expect(state.objects).toEqual({
         byId: {},
-        allIds: []
+        allIds: [],
       });
     });
 
@@ -112,7 +112,7 @@ describe('(Redux Module) Normalized', () => {
       checkIsMutated(previousState, state, 'objects.allIds', 'objects.byId');
     });
 
-    it('should support empty load ', () => {
+    it('should support empty load', () => {
       const previousState = getState();
       load();
 
@@ -147,7 +147,7 @@ describe('(Redux Module) Normalized', () => {
       const previousState = getState();
       create({ id: 10, prop: 'value' });
 
-      expect(() => create({ id: 10, prop: 'value2' })).toThrowError();
+      expect(() => create({ id: 10, prop: 'value2' })).toThrow();
 
       const state = getState();
       expect(selectors.getAllIds(state)).toEqual([10]);
@@ -167,7 +167,7 @@ describe('(Redux Module) Normalized', () => {
       expect(selectors.getById(state, 1)).toEqual({
         id: 1,
         prop: 'value',
-        prop2: 'value2'
+        prop2: 'value2',
       });
       checkIsMutated(previousState, state, 'objects.byId.1');
       checkIsNotMutated(previousState, state, 'objects.allIds', 'objects.byId.2');
@@ -182,7 +182,7 @@ describe('(Redux Module) Normalized', () => {
       const state = getState();
       expect(selectors.getById(state, 1)).toEqual({
         id: 1,
-        prop2: 'value2'
+        prop2: 'value2',
       });
       checkIsMutated(previousState, state, 'objects.byId.1');
       checkIsNotMutated(previousState, state, 'objects.allIds', 'objects.byId.2');
@@ -219,7 +219,7 @@ describe('(Redux Module) Normalized', () => {
   describe('with a comparator', () => {
     const moduleDefinition = {
       comparator,
-      selector: state => state.objects,
+      selector: (state) => state.objects,
       reducers: {
         CREATE: 'create',
         DELETE: 'delete',
@@ -228,9 +228,9 @@ describe('(Redux Module) Normalized', () => {
         TO_FRONT: 'toFront',
         LOAD_SUCCESS: {
           type: 'load',
-          extractor: action => action.payload.objects
-        }
-      }
+          extractor: (action) => action.payload.objects,
+        },
+      },
     };
     beforeEach(() => {
       initialize(moduleDefinition);
@@ -240,7 +240,7 @@ describe('(Redux Module) Normalized', () => {
       const state = getState();
       expect(state.objects).toEqual({
         byId: {},
-        allIds: []
+        allIds: [],
       });
     });
 
@@ -249,7 +249,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 1, name: 'W' },
         { id: 2, name: 'A' },
         { id: 3, name: 'D' },
-        { id: 4, name: 'H' }
+        { id: 4, name: 'H' },
       ]);
 
       const state = getState();
@@ -322,7 +322,7 @@ describe('(Redux Module) Normalized', () => {
   describe('with a many to one index', () => {
     const moduleDefinition = {
       indexes: [{ attribute: 'containerId' }],
-      selector: state => state.objects,
+      selector: (state) => state.objects,
       reducers: {
         CREATE: 'create',
         DELETE: 'delete',
@@ -330,10 +330,10 @@ describe('(Redux Module) Normalized', () => {
         UPDATE: 'update',
         LOAD_SUCCESS: {
           type: 'load',
-          extractor: action => action.payload.objects
+          extractor: (action) => action.payload.objects,
         },
-        TO_FRONT: 'toFront'
-      }
+        TO_FRONT: 'toFront',
+      },
     };
 
     beforeEach(() => {
@@ -348,7 +348,7 @@ describe('(Redux Module) Normalized', () => {
       expect(state.objects).toEqual({
         byId: {},
         allIds: [],
-        byContainerId: {}
+        byContainerId: {},
       });
     });
 
@@ -359,7 +359,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 2, containerId: 2 },
         { id: 3 },
         { id: 4, containerId: 1 },
-        { id: 5, containerId: null }
+        { id: 5, containerId: null },
       ]);
 
       const state = getState();
@@ -383,7 +383,7 @@ describe('(Redux Module) Normalized', () => {
       expect(selectors.getAllIds(state)).toEqual([1, 2, 3, 4]);
       expect(selectors.getById(state, 4)).toEqual({
         id: 4,
-        containerId: 1
+        containerId: 1,
       });
       expect(selectors.byContainerId.get(state, 1)).toEqual([1, 4]);
       expect(selectors.byContainerId.get(state, 2)).toEqual([2]);
@@ -409,7 +409,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 2, containerId: 2 },
         { id: 3 },
         { id: 4, containerId: 1 },
-        { id: 5, containerId: null }
+        { id: 5, containerId: null },
       ]);
 
       const previousState = getState();
@@ -442,7 +442,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 2, containerId: 2 },
         { id: 3 },
         { id: 4, containerId: 1 },
-        { id: 5, containerId: null }
+        { id: 5, containerId: null },
       ]);
 
       const previousState = getState();
@@ -463,7 +463,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 2, containerId: 2 },
         { id: 3 },
         { id: 4, containerId: 1 },
-        { id: 5, containerId: null }
+        { id: 5, containerId: null },
       ]);
       const previousState = getState();
       del(1);
@@ -490,7 +490,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 3 },
         { id: 4, containerId: 1 },
         { id: 5, containerId: null },
-        { id: 6, containerId: 2 }
+        { id: 6, containerId: 2 },
       ]);
       const previousState = getState();
 
@@ -513,10 +513,184 @@ describe('(Redux Module) Normalized', () => {
     });
   });
 
+  describe('with a many to one complex index', () => {
+    const moduleDefinition = {
+      indexes: [{ attribute: { name: 'isColored', computeKey: (object) => !!object.color } }],
+      selector: (state) => state.objects,
+      reducers: {
+        CREATE: 'create',
+        DELETE: 'delete',
+        REPLACE: 'replace',
+        UPDATE: 'update',
+        LOAD_SUCCESS: {
+          type: 'load',
+          extractor: (action) => action.payload.objects,
+        },
+        TO_FRONT: 'toFront',
+      },
+    };
+
+    beforeEach(() => {
+      initialize(moduleDefinition);
+    });
+
+    it('should initialize properly the state', () => {
+      const state = getState();
+      expect(selectors.getAllIds(state)).toEqual([]);
+      expect(selectors.getById(state, 1)).toBeUndefined();
+      expect(selectors.byIsColored.get(state, true)).toEqual([]);
+      expect(state.objects).toEqual({
+        byId: {},
+        allIds: [],
+        byIsColored: {},
+      });
+    });
+
+    it('should load properly', () => {
+      const previousState = getState();
+      load([
+        { id: 1, color: 'green' },
+        { id: 2, color: 'blue' },
+        { id: 3 },
+        { id: 4, color: null },
+        { id: 5, color: undefined },
+      ]);
+
+      const state = getState();
+
+      expect(selectors.byIsColored.get(state, true)).toEqual([1, 2]);
+      expect(selectors.byIsColored.get(state, false)).toEqual([3, 4, 5]);
+
+      checkIsMutated(previousState, state, 'objects.byIsColored');
+    });
+
+    it('should create properly', () => {
+      const previousState = getState();
+      create({ id: 1, color: 'green' });
+      create({ id: 2, color: 'blue' });
+      create({ id: 3 });
+      create({ id: 4, color: 'green' });
+
+      const state = getState();
+      expect(selectors.getAllIds(state)).toEqual([1, 2, 3, 4]);
+      expect(selectors.getById(state, 4)).toEqual({
+        id: 4,
+        color: 'green',
+      });
+      expect(selectors.byIsColored.get(state, true)).toEqual([1, 2, 4]);
+      expect(selectors.byIsColored.get(state, false)).toEqual([3]);
+
+      checkIsMutated(previousState, state, 'objects.byIsColored');
+    });
+
+    it('should return the same indexed array between two calls', () => {
+      load([{ id: 1, color: 'green' }]);
+
+      const state = getState();
+
+      // use .eq() to ensure ===
+      expect(selectors.byIsColored.get(state, true)).toBe(selectors.byIsColored.get(state, true));
+      expect(selectors.byIsColored.get(state, true)).toBe(selectors.byIsColored.get(state, true));
+    });
+
+    it('should update properly', () => {
+      load([
+        { id: 1, color: 'green' },
+        { id: 2, color: 'blue' },
+        { id: 3 },
+        { id: 4, color: 'green' },
+        { id: 5, color: null },
+      ]);
+
+      const previousState = getState();
+      update({ id: 1, color: null });
+      checkIsMutated(
+        previousState,
+        getState(),
+        'objects.byIsColored.true',
+        'objects.byIsColored.false'
+      );
+
+      update({ id: 2, color: 'yellow' });
+      update({ id: 3, color: 'blue' });
+      update({ id: 4, color: null });
+      update({ id: 5, color: 'yellow' });
+
+      const state = getState();
+      expect(selectors.byIsColored.get(state, true)).toEqual([2, 3, 5]);
+      expect(selectors.byIsColored.get(state, false)).toEqual([1, 4]);
+    });
+
+    it('should replace properly', () => {
+      load([
+        { id: 1, color: 'green', value: false },
+        { id: 2, color: 'blue' },
+        { id: 3 },
+        { id: 4, color: 'green' },
+        { id: 5, color: null },
+      ]);
+
+      const previousState = getState();
+      replace({ id: 1, color: null });
+      checkIsMutated(
+        previousState,
+        getState(),
+        'objects.byIsColored.true',
+        'objects.byIsColored.false'
+      );
+      expect(selectors.getById(getState(), 1)).toEqual({ id: 1, color: null });
+    });
+
+    it('should delete properly', () => {
+      load([
+        { id: 1, color: 'green' },
+        { id: 2, color: 'blue' },
+        { id: 3 },
+        { id: 4, color: 'green' },
+        { id: 5, color: null },
+      ]);
+      const previousState = getState();
+      del(1);
+      expect(selectors.byIsColored.get(getState(), true)).toEqual([2, 4]);
+      checkIsMutated(previousState, getState(), 'objects.byIsColored.true');
+      checkIsNotMutated(previousState, getState(), 'objects.byIsColored.false');
+
+      del(4);
+      expect(selectors.byIsColored.get(getState(), true)).toEqual([2]);
+
+      del(3);
+      expect(selectors.byIsColored.get(getState(), false)).toEqual([5]);
+    });
+
+    it('should do toFront properly', () => {
+      load([
+        { id: 1, color: 'green' },
+        { id: 2, color: 'yellow' },
+        { id: 3 },
+        { id: 4, color: 'green' },
+        { id: 5, color: null },
+        { id: 6, color: 'yellow' },
+      ]);
+      const previousState = getState();
+
+      toFront(1);
+      expect(selectors.byIsColored.get(getState(), true)).toEqual([2, 4, 6, 1]);
+
+      checkIsMutated(previousState, getState(), 'objects.byIsColored.true');
+      checkIsNotMutated(previousState, getState(), 'objects.byIsColored.false');
+
+      toFront(2);
+      expect(selectors.byIsColored.get(getState(), true)).toEqual([4, 6, 1, 2]);
+
+      toFront(3);
+      expect(selectors.byIsColored.get(getState(), false)).toEqual([5, 3]);
+    });
+  });
+
   describe('with a sorted many to one index', () => {
     const moduleDefinition = {
       indexes: [{ attribute: 'containerId', comparator }],
-      selector: state => state.objects,
+      selector: (state) => state.objects,
       reducers: {
         CREATE: 'create',
         DELETE: 'delete',
@@ -524,9 +698,9 @@ describe('(Redux Module) Normalized', () => {
         REPLACE: 'replace',
         LOAD_SUCCESS: {
           type: 'load',
-          extractor: action => action.payload.objects
-        }
-      }
+          extractor: (action) => action.payload.objects,
+        },
+      },
     };
 
     beforeEach(() => {
@@ -546,7 +720,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 2, containerId: 2, name: 'B' },
         { id: 3, name: 'C' },
         { id: 4, containerId: 1, name: 'E' },
-        { id: 5, containerId: null, name: 'F' }
+        { id: 5, containerId: null, name: 'F' },
       ]);
 
       const state = getState();
@@ -574,7 +748,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 3, name: 'C' },
         { id: 4, containerId: 1, name: 'E' },
         { id: 5, containerId: null, name: 'F' },
-        { id: 6, containerId: 2, name: 'G', stuff: 0 }
+        { id: 6, containerId: 2, name: 'G', stuff: 0 },
       ]);
 
       let previousState = getState();
@@ -612,7 +786,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 3, name: 'C' },
         { id: 4, containerId: 1, name: 'E' },
         { id: 5, containerId: null, name: 'F' },
-        { id: 6, containerId: 2, name: 'G', stuff: 0 }
+        { id: 6, containerId: 2, name: 'G', stuff: 0 },
       ]);
 
       const previousState = getState();
@@ -628,7 +802,7 @@ describe('(Redux Module) Normalized', () => {
         { id: 2, containerId: 2, name: 'B' },
         { id: 3, name: 'C' },
         { id: 4, containerId: 1, name: 'E' },
-        { id: 5, containerId: null, name: 'F' }
+        { id: 5, containerId: null, name: 'F' },
       ]);
       del(1);
       expect(selectors.byContainerId.get(getState(), 1)).toEqual([4]);
@@ -638,7 +812,7 @@ describe('(Redux Module) Normalized', () => {
   describe('with a one to one index', () => {
     const moduleDefinition = {
       indexes: [{ attribute: 'containerId', oneToOne: true }],
-      selector: state => state.objects,
+      selector: (state) => state.objects,
       reducers: {
         CREATE: 'create',
         DELETE: 'delete',
@@ -646,9 +820,9 @@ describe('(Redux Module) Normalized', () => {
         REPLACE: 'replace',
         LOAD_SUCCESS: {
           type: 'load',
-          extractor: action => action.payload.objects
-        }
-      }
+          extractor: (action) => action.payload.objects,
+        },
+      },
     };
 
     beforeEach(() => {
@@ -663,20 +837,24 @@ describe('(Redux Module) Normalized', () => {
     });
 
     it('should load properly', () => {
-      load([{ id: 0, containerId: 10 }, { id: 2, containerId: 20 }, { id: 3, containerId: 30 }]);
+      load([
+        { id: 0, containerId: 10 },
+        { id: 2, containerId: 20 },
+        { id: 3, containerId: 30 },
+      ]);
 
       const state = getState();
       expect(selectors.byContainerId.get(state, 10)).toEqual({
         id: 0,
-        containerId: 10
+        containerId: 10,
       });
       expect(selectors.byContainerId.get(state, 20)).toEqual({
         id: 2,
-        containerId: 20
+        containerId: 20,
       });
       expect(selectors.byContainerId.get(state, 30)).toEqual({
         id: 3,
-        containerId: 30
+        containerId: 30,
       });
       expect(selectors.byContainerId.get(state, 40)).toBeUndefined();
       expect(selectors.byContainerId.exists(state, 10)).toBeTruthy();
@@ -691,19 +869,23 @@ describe('(Redux Module) Normalized', () => {
       const state = getState();
       expect(selectors.byContainerId.get(state, 10)).toEqual({
         id: 1,
-        containerId: 10
+        containerId: 10,
       });
       expect(selectors.byContainerId.get(state, 20)).toEqual({
         id: 2,
-        containerId: 20
+        containerId: 20,
       });
       expect(selectors.byContainerId.get(state, null)).toEqual({
-        id: 3
+        id: 3,
       });
     });
 
     it('should update properly', () => {
-      load([{ id: 1, containerId: 10 }, { id: 2, containerId: 20 }, { id: 3, containerId: 30 }]);
+      load([
+        { id: 1, containerId: 10 },
+        { id: 2, containerId: 20 },
+        { id: 3, containerId: 30 },
+      ]);
 
       update({ id: 1, containerId: 40 });
 
@@ -712,13 +894,18 @@ describe('(Redux Module) Normalized', () => {
       expect(selectors.byContainerId.exists(state, 10)).toBeFalsy();
       expect(selectors.byContainerId.get(state, 40)).toEqual({
         id: 1,
-        containerId: 40
+        containerId: 40,
       });
       expect(selectors.byContainerId.exists(state, 40)).toBeTruthy();
     });
 
+    // eslint-disable-next-line jest/expect-expect
     it('should not update the index if not needed', () => {
-      load([{ id: 1, containerId: 10 }, { id: 2, containerId: 20 }, { id: 3, containerId: 30 }]);
+      load([
+        { id: 1, containerId: 10 },
+        { id: 2, containerId: 20 },
+        { id: 3, containerId: 30 },
+      ]);
       const previousState = getState();
       update({ id: 1, containerId: 10, value: true });
       checkIsMutated(previousState, getState(), 'objects.byId.1');
@@ -729,7 +916,7 @@ describe('(Redux Module) Normalized', () => {
       load([
         { id: 1, containerId: 10, value: true },
         { id: 2, containerId: 20 },
-        { id: 3, containerId: 30 }
+        { id: 3, containerId: 30 },
       ]);
 
       replace({ id: 1, containerId: 40 });
@@ -739,13 +926,17 @@ describe('(Redux Module) Normalized', () => {
       expect(selectors.byContainerId.exists(state, 10)).toBeFalsy();
       expect(selectors.byContainerId.get(state, 40)).toEqual({
         id: 1,
-        containerId: 40
+        containerId: 40,
       });
       expect(selectors.byContainerId.exists(state, 40)).toBeTruthy();
     });
 
     it('should delete properly', () => {
-      load([{ id: 1, containerId: 10 }, { id: 2, containerId: 20 }, { id: 3, containerId: 30 }]);
+      load([
+        { id: 1, containerId: 10 },
+        { id: 2, containerId: 20 },
+        { id: 3, containerId: 30 },
+      ]);
 
       del(1);
 
